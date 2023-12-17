@@ -89,7 +89,11 @@ public partial class Grid : Node2D
             {
                 RemoveChild(squareToAdd);
             }
+
+            Console.WriteLine($"Square added at: {squareToAdd.GridPosition}");
         }
+
+        CurrentShape.QueueFree();
 
         var rowsRemoved = CheckCompleteRows();
         ShiftRowsDown(rowsRemoved);
@@ -109,7 +113,7 @@ public partial class Grid : Node2D
 
             if (IsPositionOccupied(local))
             {
-                throw new Exception();
+                Console.WriteLine($"Could not set sprite: {local}, it was occupied");
             }
 
             square.GridPosition = local;
@@ -225,11 +229,6 @@ public partial class Grid : Node2D
 
     public void AddShape()
     {
-        if (CurrentShape != null)
-        {
-            RemoveChild(CurrentShape);
-        }
-
         CurrentShape = GetNode<ShapeFactory>("../ShapeFactory").Generate();
         CurrentShape.Name = "currentshape";
         CurrentShape.Position = new Vector2(GridSize.X / 2 - CellSize, CellSize).Snapped(new Vector2(CellSize, CellSize));
@@ -256,10 +255,10 @@ public partial class Grid : Node2D
 
     internal bool ShiftCurrentDown()
     {
-        if(CanMoveInYDirection()) {
+        if (CanMoveInYDirection())
+        {
             var fallVec = new Vector2(0, CellSize);
             CurrentShape.Position += fallVec;
-            CurrentShape.Squares.ForEach(x => TrySetSpriteOnCoords(x));
             return true;
         }
 
@@ -272,7 +271,6 @@ public partial class Grid : Node2D
         {
             var righVec = new Vector2(CellSize, 0);
             CurrentShape.Position += righVec;
-            CurrentShape.Squares.ForEach(x => TrySetSpriteOnCoords(x));
             return true;
         }
 
@@ -285,7 +283,6 @@ public partial class Grid : Node2D
         {
             var leftVec = new Vector2(-CellSize, 0);
             CurrentShape.Position += leftVec;
-            CurrentShape.Squares.ForEach(x => TrySetSpriteOnCoords(x));
             return true;
         }
 
@@ -298,7 +295,7 @@ public partial class Grid : Node2D
         foreach (var square in CurrentShape.Squares)
         {
             var positionToCheck = square.GlobalPosition + direction * CellSize;
-           
+
             if (direction == Vector2.Left)
             {
                 canMove.Add(IsPositionInGridStartX(positionToCheck));
@@ -314,12 +311,23 @@ public partial class Grid : Node2D
 
     public bool CanMoveInYDirection()
     {
-        return !IsShapeOnFloor() && !IsShapeOnCollidingWithAnother(Vector2.Down);
+        var isOnFloor = IsShapeOnFloor();
+        var isCollingWithAnother = IsShapeOnCollidingWithAnother(Vector2.Down);
+        return !isOnFloor && !isCollingWithAnother;
     }
 
     private bool IsShapeOnCollidingWithAnother(Vector2 direction)
     {
-        return GridSquares.Any(x => IsColliding(x, direction * CellSize));
+        var didCollide = false;
+        foreach (var square in CurrentShape.Squares)
+        {
+            if (IsColliding(square, direction * CellSize))
+            {
+                didCollide = true;
+            }
+        }
+
+        return didCollide;
     }
 
     private bool IsShapeOnFloor()
@@ -333,41 +341,56 @@ public partial class Grid : Node2D
         return didCollide.Any(x => x);
     }
 
-    public Vector2 GetSquaresDirectionOutOfBoundsX(GridSquare square) {
-        
-        if(IsPositionInGridStartX(square.GlobalPosition) && !IsPositionInGridEndX(square.GlobalPosition)) {
+    public Vector2 GetSquaresDirectionOutOfBoundsX(GridSquare square)
+    {
+
+        if (IsPositionInGridStartX(square.GlobalPosition) && !IsPositionInGridEndX(square.GlobalPosition))
+        {
             return Vector2.Right;
-        } else if(!IsPositionInGridStartX(square.GlobalPosition) && IsPositionInGridEndX(square.GlobalPosition)) {
+        }
+        else if (!IsPositionInGridStartX(square.GlobalPosition) && IsPositionInGridEndX(square.GlobalPosition))
+        {
             return Vector2.Left;
-        } else {
+        }
+        else
+        {
             return Vector2.Zero;
         }
     }
 
     public Vector2 GetSquaresDirectionOutOfBoundsY(GridSquare square)
     {
-        if(IsPositionInGridStartY(square.GlobalPosition) && !IsPositionInGridEndY(square.GlobalPosition)) {
+        if (IsPositionInGridStartY(square.GlobalPosition) && !IsPositionInGridEndY(square.GlobalPosition))
+        {
             return Vector2.Down;
-        } else if(!IsPositionInGridStartY(square.GlobalPosition) && IsPositionInGridEndY(square.GlobalPosition)) {
+        }
+        else if (!IsPositionInGridStartY(square.GlobalPosition) && IsPositionInGridEndY(square.GlobalPosition))
+        {
             return Vector2.Up;
-        } else {
+        }
+        else
+        {
             return Vector2.Zero;
         }
     }
 
-    private bool IsPositionInGridStartX(Vector2 position) {
+    private bool IsPositionInGridStartX(Vector2 position)
+    {
         return position.X >= GridStartX;
     }
 
-    private bool IsPositionInGridEndX(Vector2 position) {
+    private bool IsPositionInGridEndX(Vector2 position)
+    {
         return position.X < GridEndX;
     }
 
-    private bool IsPositionInGridStartY(Vector2 position) {
-        return position.Y > GridStartY; 
+    private bool IsPositionInGridStartY(Vector2 position)
+    {
+        return position.Y > GridStartY;
     }
 
-    private bool IsPositionInGridEndY(Vector2 position) {
-        return position.Y < GridEndY; 
+    private bool IsPositionInGridEndY(Vector2 position)
+    {
+        return position.Y < GridEndY;
     }
 }
