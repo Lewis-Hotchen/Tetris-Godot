@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://dftef5m4hgske"]
+
+[ext_resource type="Script" path="res://Scripts/MainGameWindow.cs" id="3_4dvd0"]
+[ext_resource type="PackedScene" uid="uid://hx3ti0uk1b6q" path="res://Scenes/Timings.tscn" id="3_nknbr"]
+
+[node name="Root" type="Node2D"]
+script = ExtResource("3_4dvd0")
+
+[node name="Timings" parent="." instance=ExtResource("3_nknbr")]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+z_index = -1
+offset_left = -2.0
+offset_top = -7.0
+offset_right = 706.0
+offset_bottom = 899.0
+color = Color(0, 0, 0, 1)
