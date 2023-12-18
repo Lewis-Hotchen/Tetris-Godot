@@ -7,11 +7,19 @@ public partial class MainGameWindow : Node2D
     private Timer fallTimer;
     private Grid Grid;
     private float cellSize;
+    private bool isDebug = false;
+    private Vector2 mouseHover = new(-1, -1);
+    private Node2D panel;
+    private Vector2 clickedPos;
 
     public override void _Ready()
     {
+        var window = GetWindow();
+        window.InitialPosition = Window.WindowInitialPosition.Absolute;
+
         SetupFallTimer();
         SetupGrid();
+        panel = GetNode<Node2D>("UI");
 
         var shapeFactory = new ShapeFactory(Grid.CellSize)
         {
@@ -36,17 +44,6 @@ public partial class MainGameWindow : Node2D
         AddChild(Grid);
     }
 
-    private void RedrawGrid()
-    {
-        // foreach(var sprite in Grid.GridSquares.Where(x => x != null)) {
-        //     if(!sprite.Value.IsQueuedForDeletion()) {
-        //         RemoveChild(GetNode<Sprite2D>(sprite.Value.Name.ToString()));
-        //         sprite.Value.GlobalPosition = sprite.Key;
-        //         sprite.Value.Name = $"block_{sprite.Key}";
-        //     }
-        // }
-    }
-
     /// <summary>
     /// On the tick of the fall timer, try and shift a block down, if it can.
     /// </summary>
@@ -63,22 +60,57 @@ public partial class MainGameWindow : Node2D
     public override void _Process(double delta)
     {
         QueueRedraw();
-        ProcessSpawnBlockDEBUG();
         ProcessRotate();
         ProcessShiftRight();
         ProcessShiftLeft();
         ProcessPushDown();
+        ProcessHardDrop();
+        ProcessDebug();
     }
+
+    private void ProcessDebug()
+    {
+        if (Input.IsActionJustPressed("debug"))
+        {
+            isDebug = !isDebug;
+        }
+
+        if (Input.IsActionJustPressed("pause"))
+        {
+            fallTimer.Paused = !fallTimer.Paused;
+        }
+    }
+
+    public override void _Input(InputEvent @event)
+    {
+        // Mouse in viewport coordinates.
+        if (@event is InputEventMouseButton eventMouseButton)
+        {
+            GD.Print("Mouse Click/Unclick at: ", eventMouseButton.Position.Snapped(new Vector2(32,32)));
+            clickedPos = eventMouseButton.Position.Snapped(new Vector2(32, 32));
+        }
+    }
+
+    private void ProcessHardDrop()
+    {
+        if (Input.IsActionJustPressed("ui_accept"))
+        {
+            fallTimer.Stop();
+            Grid.ForceBlockDown();
+            GenShape();
+        }
+    }
+
 
     private void ProcessPushDown()
     {
         if (Input.IsActionPressed("ui_down"))
         {
-            fallTimer.WaitTime = 0.05;
+            fallTimer.WaitTime = 0.1f;
         }
         else
         {
-            fallTimer.WaitTime = 1;
+            fallTimer.WaitTime = 0.5f;
         }
     }
 
@@ -104,14 +136,8 @@ public partial class MainGameWindow : Node2D
         {
             Grid.CurrentShape.Rotate(false);
             Grid.CurrentShape.ShiftInWall(Grid);
-        }
-    }
-
-    private void ProcessSpawnBlockDEBUG()
-    {
-        if (Input.IsActionJustPressed("ui_accept"))
-        {
-            fallTimer.Paused = !fallTimer.Paused;
+            Grid.CurrentShape.ShiftInBlock(Grid);
+            fallTimer.WaitTime = 0.02;
         }
     }
 
@@ -119,5 +145,39 @@ public partial class MainGameWindow : Node2D
     {
         Grid.AddShape();
         fallTimer.Start();
+    }
+
+    public override void _Draw()
+    {
+        if (isDebug)
+        {
+            GetNode<Label>("TimerLabel").Visible = true;
+
+            //print columns
+            for (int col = (int)cellSize; col < GetViewportRect().Size.X; col += (int)cellSize)
+            {
+                DrawDashedLine(new Vector2(col, 0), new Vector2(col, GetViewportRect().Size.Y), new Color(1, 1, 1, 0.5f), 1);
+            }
+
+            //print rows
+            for (int row = (int)cellSize; row < GetViewportRect().Size.Y; row += (int)cellSize)
+            {
+                DrawDashedLine(new Vector2(0, row), new Vector2(GetViewportRect().Size.X, row), new Color(1, 1, 1, 0.5f), 1);
+            }
+
+
+            GetNode<Label>("TimerLabel").Text = fallTimer.TimeLeft.ToString("#.##");
+            panel.GetNode<PopupPanel>("PopupPanel").Position = (Vector2I)clickedPos;
+            Console.WriteLine(panel.GetNode<PopupPanel>("PopupPanel").Position);
+        }
+        else
+        {
+            if (GetNode<Label>("TimerLabel").Visible)
+            {
+                GetNode<Label>("TimerLabel").Visible = !GetNode<Label>("TimerLabel").Visible;
+            }
+        }
+
+        base._Draw();
     }
 }

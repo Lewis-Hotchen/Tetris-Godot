@@ -1,12 +1,36 @@
-[gd_scene load_steps=3 format=3 uid="uid://dftef5m4hgske"]
+[gd_scene load_steps=4 format=3 uid="uid://dftef5m4hgske"]
 
 [ext_resource type="Script" path="res://Scripts/MainGameWindow.cs" id="3_4dvd0"]
 [ext_resource type="PackedScene" uid="uid://hx3ti0uk1b6q" path="res://Scenes/Timings.tscn" id="3_nknbr"]
+
+[sub_resource type="Theme" id="Theme_efbgq"]
+default_font_size = 40
 
 [node name="Root" type="Node2D"]
 script = ExtResource("3_4dvd0")
 
 [node name="Timings" parent="." instance=ExtResource("3_nknbr")]
+
+[node name="TimerLabel" type="Label" parent="."]
+offset_left = 13.0
+offset_top = 12.0
+offset_right = 154.0
+offset_bottom = 112.0
+theme = SubResource("Theme_efbgq")
+
+[node name="UI" type="Node2D" parent="."]
+
+[node name="PopupPanel" type="PopupPanel" parent="UI"]
+title = "Some text"
+size = Vector2i(89, 31)
+visible = true
+
+[node name="Label" type="Label" parent="UI/PopupPanel"]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 85.0
+offset_bottom = 27.0
+text = "Some Text"
 
 [node name="ColorRect" type="ColorRect" parent="."]
 z_index = -1
