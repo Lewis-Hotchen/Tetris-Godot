@@ -1,4 +1,3 @@
-using System;
 using Godot;
 namespace Tetris;
 
@@ -135,7 +134,6 @@ public partial class MainGameWindow : Node2D
         {
             Grid.CurrentShape.Rotate(false);
             Grid.CurrentShape.ShiftInWall(Grid);
-            Grid.CurrentShape.ShiftInBlock(Grid);
             fallTimer.WaitTime = 0.02;
         }
     }

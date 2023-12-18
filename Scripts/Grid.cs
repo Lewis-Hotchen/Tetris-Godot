@@ -302,10 +302,17 @@ public partial class Grid : Node2D
             {
                 canMove.Add(IsPositionInGridEndX(positionToCheck));
             }
+
+            canMove.Add(!IsInAnotherBlock(positionToCheck));
         }
 
         return canMove.All(x => x);
     }
+
+    private bool IsInAnotherBlock(Vector2 position) { 
+        return IsGlobalPositionOccupied(position);
+    }
+
 
     public bool CanMoveInYDirection()
     {
