@@ -1,3 +1,4 @@
+using System;
 using Godot;
 namespace Tetris;
 
@@ -8,8 +9,8 @@ public partial class MainGameWindow : Node2D
     private float cellSize;
     private bool isDebug = false;
     private Vector2 mouseHover = new(-1, -1);
-    private Node2D panel;
     private Vector2 clickedPos;
+    private TShape holdShape;
 
     public override void _Ready()
     {
@@ -18,7 +19,6 @@ public partial class MainGameWindow : Node2D
 
         SetupFallTimer();
         SetupGrid();
-        panel = GetNode<Node2D>("UI");
 
         var shapeFactory = new ShapeFactory(Grid.CellSize)
         {
@@ -65,7 +65,24 @@ public partial class MainGameWindow : Node2D
         ProcessPushDown();
         ProcessHardDrop();
         ProcessDebug();
+        ProcessHold();
     }
+
+    private void ProcessHold()
+    {
+        if(Input.IsActionJustPressed("hold")) {
+            if(GetNodeOrNull<TShape>("HoldContainer/CenterContainer/Panel/heldShape") == null) {
+                GetNode<HoldContainer>("HoldContainer").HoldShape(Grid.CurrentShape.Shape);
+                Grid.CurrentShape.QueueFree();
+                GenShape();
+            } else {
+                var shape = GetNode<HoldContainer>("HoldContainer").SwapShape(Grid.CurrentShape.Shape);
+                Grid.CurrentShape.QueueFree();
+                GenShape(shape);
+            }
+        }
+    }
+
 
     private void ProcessDebug()
     {
@@ -141,6 +158,12 @@ public partial class MainGameWindow : Node2D
     private void GenShape()
     {
         Grid.AddShape();
+        fallTimer.Start();
+    }
+
+    private void GenShape(Shapes shape)
+    {
+        Grid.AddShape(shape);
         fallTimer.Start();
     }
 

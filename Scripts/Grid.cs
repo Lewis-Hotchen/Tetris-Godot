@@ -233,6 +233,14 @@ public partial class Grid : Node2D
         AddChild(CurrentShape);
     }
 
+    public void AddShape(Shapes shape)
+    {
+        CurrentShape = GetNode<ShapeFactory>("../ShapeFactory").Generate(shape);
+        CurrentShape.Name = "currentshape";
+        CurrentShape.Position = new Vector2(GridSize.X / 2 - CellSize, CellSize).Snapped(new Vector2(CellSize, CellSize));
+        AddChild(CurrentShape);
+    }
+
     public bool IsPositionOccupied(Vector2 position)
     {
         var occupied = GridSquares.Any(x => x.GridPosition == position);
@@ -312,7 +320,6 @@ public partial class Grid : Node2D
     private bool IsInAnotherBlock(Vector2 position) { 
         return IsGlobalPositionOccupied(position);
     }
-
 
     public bool CanMoveInYDirection()
     {

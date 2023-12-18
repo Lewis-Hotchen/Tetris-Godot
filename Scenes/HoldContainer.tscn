@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://4qgmgkgr7prk"]
+
+[ext_resource type="Script" path="res://Scripts/HoldContainer.cs" id="1_6duop"]
+[ext_resource type="PackedScene" uid="uid://b06181ynijlgy" path="res://Scenes/ShapeFactory.tscn" id="2_pp2fx"]
+
+[sub_resource type="Theme" id="Theme_lm2pv"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k55ri"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[node name="HoldContainer" type="Node2D"]
+script = ExtResource("1_6duop")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+custom_minimum_size = Vector2(256, 256)
+offset_right = 64.0
+offset_bottom = 64.0
+theme = SubResource("Theme_lm2pv")
+
+[node name="Panel" type="Panel" parent="CenterContainer"]
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_k55ri")
+
+[node name="ShapeFactory" parent="." instance=ExtResource("2_pp2fx")]
+CellSize = 32
