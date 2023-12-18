@@ -109,27 +109,8 @@ public partial class TShape : Node2D
             pos.X = 0;
             pos.Y += StepSize;
         }
-
     }
-
-    public void ShiftInBlock(Grid grid)
-    {
-        var squaresInBlock = new Dictionary<Vector2, List<GridSquare>>(){
-            {Vector2.Down, new List<GridSquare>()},
-            {Vector2.Left, new List<GridSquare>()},
-            {Vector2.Right, new List<GridSquare>()},
-            {Vector2.Zero, new List<GridSquare>()},
-
-        };
-
-        float shiftValue = 32f;
-
-        foreach(var square in Squares) {
-            squaresInBlock[grid.GetSquaresDirectionInBlockX(square)].Add(square);
-            squaresInBlock[grid.GetSquaresDirectionInBlockY(square)].Add(square);
-        }
-    }
-
+    
     public void ShiftInWall(Grid grid)
     {
         var squaresInWall = new Dictionary<Vector2, List<GridSquare>>(){
@@ -180,9 +161,5 @@ public partial class TShape : Node2D
                 GlobalPosition = new Vector2(GlobalPosition.X + shiftValue * numberOfCellsToShiftX, GlobalPosition.Y);
             }
         }
-    }
-
-    private static bool IsInAnotherBlock(GridSquare square, Grid grid) { 
-        return grid.IsGlobalPositionOccupied(square.GlobalPosition);
     }
 }
