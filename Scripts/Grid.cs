@@ -89,8 +89,6 @@ public partial class Grid : Node2D
             {
                 RemoveChild(squareToAdd);
             }
-
-            Console.WriteLine($"Square added at: {squareToAdd.GridPosition}");
         }
 
         CurrentShape.QueueFree();
@@ -374,6 +372,43 @@ public partial class Grid : Node2D
         }
     }
 
+    internal Vector2 GetSquaresDirectionInBlockX(GridSquare square)
+    {
+        if (IsSquareInGridSquaresX(square.GlobalPosition) && !IsSquareInGridSquaresY(square.GlobalPosition))
+        {
+            return Vector2.Right;
+        }
+        else if (!IsSquareInGridSquaresX(square.GlobalPosition) && IsSquareInGridSquaresY(square.GlobalPosition))
+        {
+            return Vector2.Left;
+        }
+        else
+        {
+            return Vector2.Zero;
+        }
+    }
+
+    private bool IsSquareInGridSquaresY(Vector2 globalPosition)
+    {
+        throw new NotImplementedException();
+    }
+
+    private bool IsSquareInGridSquares(Vector2 globalPosition)
+    {
+        throw new NotImplementedException();
+    }
+
+    private bool IsSquareInGridSquaresX(Vector2 globalPosition)
+    {
+        var local = ToLocalGridCoords(globalPosition);
+        return false;
+    }
+
+    internal Vector2 GetSquaresDirectionInBlockY(GridSquare square)
+    {
+        throw new NotImplementedException();
+    }
+
     private bool IsPositionInGridStartX(Vector2 position)
     {
         return position.X >= GridStartX;
@@ -392,5 +427,15 @@ public partial class Grid : Node2D
     private bool IsPositionInGridEndY(Vector2 position)
     {
         return position.Y < GridEndY;
+    }
+
+    public void ForceBlockDown()
+    {
+        //Basically do a batch Can fall
+        while(CanMoveInYDirection()){
+            ShiftCurrentDown();
+        }
+
+        AddShapeToGrid();
     }
 }

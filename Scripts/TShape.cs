@@ -118,13 +118,16 @@ public partial class TShape : Node2D
             {Vector2.Down, new List<GridSquare>()},
             {Vector2.Left, new List<GridSquare>()},
             {Vector2.Right, new List<GridSquare>()},
+            {Vector2.Zero, new List<GridSquare>()},
+
         };
 
-        // float shiftValue = 32f;
+        float shiftValue = 32f;
 
-        // foreach(var square in Squares) {
-            
-        // }
+        foreach(var square in Squares) {
+            squaresInBlock[grid.GetSquaresDirectionInBlockX(square)].Add(square);
+            squaresInBlock[grid.GetSquaresDirectionInBlockY(square)].Add(square);
+        }
     }
 
     public void ShiftInWall(Grid grid)
