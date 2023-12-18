@@ -7,12 +7,17 @@ public partial class ShapeFactory : Node2D
 {
     private List<TShape> tShapes;
     private float mass = 0.0f;
-    public int CellSize { get; }
+    
+    [Export]
+    public int CellSize { get; set; }
 
     public ShapeFactory(int CellSize)
     {
         this.CellSize = CellSize;
+    }
 
+    public ShapeFactory()
+    {
     }
     public override void _Ready()
     {
@@ -114,4 +119,21 @@ public partial class ShapeFactory : Node2D
 
         throw new System.Exception(); //Should never reach here
     }
+
+    public TShape Generate(Shapes shape) {
+        foreach(var t in tShapes) {
+            if(t.Shape == shape) {
+                return new TShape(
+                    t.Cells,
+                    t.Shape,
+                    t.ShapeColor,
+                    CellSize
+                ) {
+                    Visible = true
+                };
+            }
+        }
+
+        throw new System.Exception(); //Should never reach here
+    } 
 }

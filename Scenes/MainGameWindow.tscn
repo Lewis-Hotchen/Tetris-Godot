@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://dftef5m4hgske"]
+[gd_scene load_steps=5 format=3 uid="uid://dftef5m4hgske"]
 
 [ext_resource type="Script" path="res://Scripts/MainGameWindow.cs" id="3_4dvd0"]
+[ext_resource type="PackedScene" uid="uid://4qgmgkgr7prk" path="res://Scenes/HoldContainer.tscn" id="3_30yak"]
 [ext_resource type="PackedScene" uid="uid://hx3ti0uk1b6q" path="res://Scenes/Timings.tscn" id="3_nknbr"]
 
 [sub_resource type="Theme" id="Theme_efbgq"]
@@ -32,3 +33,44 @@ offset_top = -7.0
 offset_right = 706.0
 offset_bottom = 899.0
 color = Color(0, 0, 0, 1)
+
+[node name="HoldContainer" parent="." instance=ExtResource("3_30yak")]
+position = Vector2(477, -9)
+
+[node name="HoldLalbel" type="Label" parent="."]
+offset_left = 587.0
+offset_top = 193.0
+offset_right = 726.0
+offset_bottom = 216.0
+text = "Hold
+"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_left = 527.0
+offset_top = 244.0
+offset_right = 666.0
+offset_bottom = 294.0
+
+[node name="ArrowLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Move: Arrow Keys"
+
+[node name="HoldKeyButton" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Hold: C"
+
+[node name="HardDropButton" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Hard Drop: Space"
+
+[node name="SoftDropButton" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Soft Drop: Down"
+
+[node name="PauseButton" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Pause: P"
+
+[node name="DebugButton" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Debug: B"
