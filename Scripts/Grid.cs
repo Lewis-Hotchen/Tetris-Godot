@@ -89,8 +89,6 @@ public partial class Grid : Node2D
             {
                 RemoveChild(squareToAdd);
             }
-
-            Console.WriteLine($"Square added at: {squareToAdd.GridPosition}");
         }
 
         CurrentShape.QueueFree();

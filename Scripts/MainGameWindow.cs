@@ -86,7 +86,6 @@ public partial class MainGameWindow : Node2D
         // Mouse in viewport coordinates.
         if (@event is InputEventMouseButton eventMouseButton)
         {
-            GD.Print("Mouse Click/Unclick at: ", eventMouseButton.Position.Snapped(new Vector2(32,32)));
             clickedPos = eventMouseButton.Position.Snapped(new Vector2(32, 32));
         }
     }
@@ -152,9 +151,10 @@ public partial class MainGameWindow : Node2D
         if (isDebug)
         {
             GetNode<Label>("TimerLabel").Visible = true;
+            GetNode<Label>("Label").Visible = true;
 
             //print columns
-            for (int col = (int)cellSize; col < GetViewportRect().Size.X; col += (int)cellSize)
+            for (int col = (int)Grid.GridStartX; col < Grid.GridEndX; col += (int)cellSize)
             {
                 DrawDashedLine(new Vector2(col, 0), new Vector2(col, GetViewportRect().Size.Y), new Color(1, 1, 1, 0.5f), 1);
             }
@@ -162,19 +162,23 @@ public partial class MainGameWindow : Node2D
             //print rows
             for (int row = (int)cellSize; row < GetViewportRect().Size.Y; row += (int)cellSize)
             {
-                DrawDashedLine(new Vector2(0, row), new Vector2(GetViewportRect().Size.X, row), new Color(1, 1, 1, 0.5f), 1);
+                DrawDashedLine(new Vector2(Grid.GridStartX, row), new Vector2(Grid.GridEndX, row), new Color(1, 1, 1, 0.5f), 1);
             }
 
 
             GetNode<Label>("TimerLabel").Text = fallTimer.TimeLeft.ToString("#.##");
-            panel.GetNode<PopupPanel>("PopupPanel").Position = (Vector2I)clickedPos;
-            Console.WriteLine(panel.GetNode<PopupPanel>("PopupPanel").Position);
+            GetNode<Label>("Label").Text = $"Pos: {clickedPos}";
         }
         else
         {
             if (GetNode<Label>("TimerLabel").Visible)
             {
                 GetNode<Label>("TimerLabel").Visible = !GetNode<Label>("TimerLabel").Visible;
+            }
+
+            if (GetNode<Label>("Label").Visible)
+            {
+                GetNode<Label>("Label").Visible = !GetNode<Label>("Label").Visible;
             }
         }
 

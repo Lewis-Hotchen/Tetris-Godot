@@ -18,19 +18,12 @@ offset_right = 154.0
 offset_bottom = 112.0
 theme = SubResource("Theme_efbgq")
 
-[node name="UI" type="Node2D" parent="."]
-
-[node name="PopupPanel" type="PopupPanel" parent="UI"]
-title = "Some text"
-size = Vector2i(89, 31)
-visible = true
-
-[node name="Label" type="Label" parent="UI/PopupPanel"]
+[node name="Label" type="Label" parent="."]
 offset_left = 4.0
-offset_top = 4.0
+offset_top = 82.0
 offset_right = 85.0
-offset_bottom = 27.0
-text = "Some Text"
+offset_bottom = 105.0
+text = "Pos: "
 
 [node name="ColorRect" type="ColorRect" parent="."]
 z_index = -1
